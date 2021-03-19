@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "allowJs": true,
+    "moduleResolution": "node",
+    "outDir": "dist",
+    "declaration": false,
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": true,
+    "alwaysStrict": true,
+    "strictNullChecks": true,
+    "target": "ESNext",
+    "module": "ESNext",
+    "sourceMap": true
+  },
+  "exclude": [
+    "api",
+    "node_modules",
+    "dist",
+    "docs"
+  ]
+}

@@ -2,7 +2,7 @@
 import * as fs from 'fs'
 import { Bookmark } from './apis/pinboard.js'
 
-interface StoreData {
+export interface StoreData {
   updateTime: string
   bookmarks: Bookmark[]
 }

@@ -23,14 +23,14 @@ export class Pinboard {
   }
 
   async lastUpdate (): Promise<{ update_time: string}> {
-    const response = await fetch(`https://${this.key}@api.pinboard.in/v1/posts/update?format=json`)
+    const response = await fetch(`https://api.pinboard.in/v1/posts/update?format=json&auth_token=${this.key}`)
 
-    if (response.status === 429) {
-      signale.error(`${constants.codes.TOO_MANY_REQUESTS}: ${await response.text()}`)
-      process.exit(1)
+    if (response.status === 401) {
+      throw new Error(`${constants.codes.UNAUTHENTICATED}: ${await response.text()}. Did you set valid credentials as PINBOARD_API_KEY?`)
+    } else if (response.status === 429) {
+      throw new Error(`${constants.codes.TOO_MANY_REQUESTS}: ${await response.text()}`)
     } else if (response.status !== 200) {
-      signale.error(`${constants.codes.BAD_RESPONSE}: ${await response.text()}`)
-      process.exit(1)
+      throw new Error(`${constants.codes.BAD_RESPONSE}: ${await response.text()}`)
     }
 
     return await response.json()
@@ -38,18 +38,16 @@ export class Pinboard {
 
   async * all (): AsyncGenerator<Bookmark> {
     let start = 0
-    const offset = 10
+    const offset = 50
 
     while (true) {
-      const response = await fetch(`https://${this.key}@api.pinboard.in/v1/posts/all?start=${start}&results=${offset}&format=json`)
+      const response = await fetch(`https://api.pinboard.in/v1/posts/all?start=${start}&results=${offset}&format=json&auth_token=${this.key}`)
       start += offset
 
       if (response.status === 429) {
         signale.error(`${constants.codes.TOO_MANY_REQUESTS}: ${await response.text()}`)
-        process.exit(1)
       } else if (response.status !== 200) {
         signale.error(`${constants.codes.BAD_RESPONSE}: ${await response.text()}`)
-        process.exit(1)
       }
 
       const bookmarks = await response.json()

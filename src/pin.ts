@@ -1,11 +1,12 @@
 
 import signale from 'signale'
+import { Chrome } from './apis/chrome.js'
 
 import { Bookmark, Pinboard } from './apis/pinboard.js'
 import constants from './constants.js'
 import { Store } from './store.js'
 
-export const pin = async (args: any): Promise<void> => {
+const storeData = async (): Promise<void> => {
   const key = process.env.PINBOARD_API_KEY
 
   if (typeof key === 'undefined') {
@@ -40,4 +41,15 @@ export const pin = async (args: any): Promise<void> => {
   })
 
   signale.info('done.')
+}
+
+export const pin = async (args: Record<string, any>): Promise<void> => {
+  await storeData()
+
+  const bookmarkPath = args['<fpath>']
+
+  const browser = new Chrome(bookmarkPath)
+  await browser.initialise()
+
+  const currentFolders = browser.folderNames()
 }

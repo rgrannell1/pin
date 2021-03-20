@@ -9,7 +9,7 @@ const docs = `
 Pin - Interact with Pinboard
 
 Usage:
-  pin
+  pin [--bookmarks <fpath>]
 
 Description:
 

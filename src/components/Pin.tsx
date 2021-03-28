@@ -51,7 +51,8 @@ interface PinStateLoaded {
   ttyIn: any
   active: boolean,
   folderBuffer: string[],
-  predictedFolder: string
+  predictedFolder: string,
+  lastUpdate: { update_time: string }
 }
 
 interface PinErrorState {
@@ -66,6 +67,12 @@ interface Common {
 type PinState = PinStateLoading & Common | PinStateLoaded & Common | PinErrorState & Common
 
 const fpath = path.join(dirnameVar, '../../data/pin.json')
+
+interface Keypress {
+  ctrl: boolean
+  name?: string
+  shift?: boolean
+}
 
 export class Pin extends React.Component<PinProps, PinState> {
   constructor (props: PinProps) {
@@ -101,16 +108,56 @@ export class Pin extends React.Component<PinProps, PinState> {
     }
   }
 
-  handleKeyPress (_: any, key: any) {
-    if (key && key.ctrl && (key.name == 'c' || key.name === 'z')) {
-      process.exit(0)
-    }
-
+  async saveFolder () {
     if (this.state.state !== 'LOADED_PINBOARD') {
       return
     }
 
+    let folder = this.state.folderBuffer.join('')
+
+    if (this.state.predictedFolder !== 'undefined' && this.state.predictedFolder) {
+      folder += this.state.predictedFolder
+    }
+
+    const storeData = await this.state.store.read()
+
+    if (!storeData) {
+      return
+    }
+
+    const cursor = this.state.cursor ?? 0
+    const bookmark = storeData?.bookmarks[cursor]
+
+    if (typeof bookmark === 'undefined') {
+      throw new Error(`bookmark ${cursor} not found.`)
+    }
+
+    storeData.folders[bookmark.href] = folder
+
+    await this.state.store.write({
+      updateTime: this.state.lastUpdate.update_time,
+      bookmarks: storeData.bookmarks,
+      folders: storeData.folders
+    })
+  }
+
+  async handleKeyPress (_: any, key: Keypress |  undefined) {
+    if (key && key.ctrl && (key.name == 'c' || key.name === 'z')) {
+      process.exit(0)
+    }
+
+    if (this.state.state !== 'LOADED_PINBOARD' || typeof key === 'undefined') {
+      return
+    }
+
+    if (!key.name) {
+      return
+    }
+
     if (key.name === 'backspace' && this.state.active) {
+      if (!this.state.folderBuffer) {
+        return
+      }
       this.setState({
         ...this.state,
         folderBuffer: this.state.folderBuffer.slice(0, -1)
@@ -126,12 +173,26 @@ export class Pin extends React.Component<PinProps, PinState> {
       return
     }
 
-    if (key.name === 'return') {
+    if (key.name === 'return' && !this.state.active) {
       this.setState({
         ...this.state,
         active: true
       })
 
+      return
+    }
+    if (key.name === 'return' && this.state.folderBuffer && this.state.folderBuffer.length > 0) {
+      // -- time to save!
+
+      await this.saveFolder()
+
+      this.setState({
+        ...this.state,
+        active: false,
+        folderBuffer: [],
+        predictedFolder: '',
+        cursor: this.state.cursor + 1
+      })
       return
     }
 
@@ -179,9 +240,11 @@ export class Pin extends React.Component<PinProps, PinState> {
       const folderBuffer = [...this.state.folderBuffer ?? [], name]
       const folderPrefix = folderBuffer.join('').trim()
 
-      const folders = this.state.browser.folderNames().map(folder => {
-        return folder.trim().replace('/', '').toLowerCase()
-      })
+      const extras = Object.values(this.state.storeData?.folders ?? {})
+      const folders = [...this.state.browser.folderNames(), ...extras]
+        .map(folder => {
+          return folder.trim().replace('/', '').toLowerCase()
+        })
       const predictedFolder = folders.find(folder => {
         return folder.startsWith(folderPrefix.trim().toLowerCase())
       })
@@ -218,6 +281,7 @@ export class Pin extends React.Component<PinProps, PinState> {
       this.setState({
         state: 'LOADED_PINBOARD',
         storeData,
+        lastUpdate,
         bookmarkCount: storeData.bookmarks.length,
         ttyIn: this.state.ttyIn
       })
@@ -244,7 +308,8 @@ export class Pin extends React.Component<PinProps, PinState> {
     // -- write to storage
     await this.state.store.write({
       updateTime: lastUpdate.update_time,
-      bookmarks
+      bookmarks,
+      folders: this.state.storeData?.folders ?? {}
     })
 
     // -- update state as loaded.

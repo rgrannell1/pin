@@ -5,6 +5,7 @@ import { Bookmark } from './apis/pinboard.js'
 export interface StoreData {
   updateTime: string
   bookmarks: Bookmark[]
+  folders: Record<string, string>
 }
 
 export class Store {

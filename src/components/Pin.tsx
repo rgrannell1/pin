@@ -49,6 +49,9 @@ interface PinStateLoaded {
   bookmarkCount: number
   cursor: number
   ttyIn: any
+  active: boolean,
+  folderBuffer: string[],
+  predictedFolder: string
 }
 
 interface PinErrorState {
@@ -107,7 +110,41 @@ export class Pin extends React.Component<PinProps, PinState> {
       return
     }
 
-    if (key.name === 'up') {
+    if (key.name === 'backspace' && this.state.active) {
+      this.setState({
+        ...this.state,
+        folderBuffer: this.state.folderBuffer.slice(0, -1)
+      })
+    }
+
+    if (key.name === 'escape') {
+      this.setState({
+        ...this.state,
+        active: false
+      })
+
+      return
+    }
+
+    if (key.name === 'return') {
+      this.setState({
+        ...this.state,
+        active: true
+      })
+
+      return
+    }
+
+    if (key.name === 'escape' && this.state.active) {
+      this.setState({
+        ...this.state,
+        active: false
+      })
+
+      return
+    }
+
+    if (key.name === 'down' && !this.state.active) {
       this.setState({
         ...this.state,
         cursor: Math.min((this.state.cursor ?? 0) + 1, this.state.bookmarkCount - 1)
@@ -116,7 +153,7 @@ export class Pin extends React.Component<PinProps, PinState> {
       return
     }
 
-    if (key.name === 'down') {
+    if (key.name === 'up' && !this.state.active) {
       this.setState({
         ...this.state,
         cursor: Math.max((this.state.cursor ?? 0) - 1, 0)
@@ -125,11 +162,37 @@ export class Pin extends React.Component<PinProps, PinState> {
       return
     }
 
-    this.setState({
-      ...this.state,
-      cursor: (this.state.cursor ?? 0) + 1
-    })
+    if (this.state.active) {
+      // -- this is tricky, we need to exclude specials
+      if (key.ctrl) {
+        return
+      }
+      if (key.name.length > 1) {
+        return
+      }
 
+      let name = key.name
+      if (key.shift) {
+        name = name.toUpperCase()
+      }
+
+      const folderBuffer = [...this.state.folderBuffer ?? [], name]
+      const folderPrefix = folderBuffer.join('').trim()
+
+      const folders = this.state.browser.folderNames().map(folder => {
+        return folder.trim().replace('/', '').toLowerCase()
+      })
+      const predictedFolder = folders.find(folder => {
+        return folder.startsWith(folderPrefix.trim().toLowerCase())
+      })
+
+      this.setState({
+        ...this.state,
+        folderBuffer,
+        predictedFolder: predictedFolder?.slice(folderPrefix.length)
+      })
+      return
+    }
   }
 
   async loadBookmarks () {
@@ -216,7 +279,11 @@ export class Pin extends React.Component<PinProps, PinState> {
       return LoadedPinboardView({
         cursor: this.state.cursor,
         bookmarkCount: this.state.bookmarkCount,
-        storeData: this.state.storeData
+        storeData: this.state.storeData,
+        folders: this.state.browser.folderNames(),
+        active: this.state.active,
+        folderBuffer: this.state.folderBuffer,
+        predictedFolder: this.state.predictedFolder
       })
     }
   }

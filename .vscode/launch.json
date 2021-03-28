@@ -9,7 +9,11 @@
         "<node_internals>/**"
       ],
       "program": "${workspaceRoot}/dist/cli.js",
-      "console": "integratedTerminal"
+      "console": "integratedTerminal",
+      "args": [
+        "--bookmarks",
+        " /home/rg/.config/google-chrome/Default/Bookmarks"
+      ]
     }
   ]
 }

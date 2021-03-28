@@ -6,15 +6,20 @@
   "main": "index.js",
   "scripts": {
     "tsc": "tsc",
-    "start": "tsc && node dist/cli.js"
+    "start": "tsc && node dist/cli.js --bookmarks /home/rg/.config/google-chrome/Default/Bookmarks"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/dotenv": "^8.2.0",
+    "@types/keypress": "^2.0.30",
     "@types/node-fetch": "^2.5.8",
     "@types/react": "^17.0.3",
     "@types/signale": "^1.4.1",
+    "dotenv": "^8.2.0",
     "ink": "^3.0.8",
+    "iohook": "^0.7.2",
+    "keypress": "^0.2.1",
     "node-fetch": "^2.6.1",
     "pin": "^0.3.0",
     "react": "^17.0.1",

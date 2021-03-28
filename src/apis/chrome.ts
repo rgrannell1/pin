@@ -66,6 +66,11 @@ export class Chrome {
     return Array.from(new Set(members))
   }
 
+  /**
+   * List all bookmark-folders
+   *
+   * @returns an array of folders
+   */
   folderNames (): string[] {
     return Chrome.listFolders(this.bookmarks.roots.bookmark_bar.children, '')
   }

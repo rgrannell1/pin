@@ -9,5 +9,7 @@ const { render } = ink
 export const pin = async (args: Record<string, any>): Promise<void> => {
   const bookmarkPath = args['<fpath>']
 
-  render(<React.StrictMode><Pin bookmarkPath={bookmarkPath} /></React.StrictMode>)
+  render(<React.StrictMode><Pin bookmarkPath={bookmarkPath} /></React.StrictMode>, {
+
+  })
 }

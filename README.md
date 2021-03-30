@@ -3,6 +3,7 @@
 
 Sync bookmarks from Pinboard to Chrome after labelling them interactively.
 
+[![asciicast](https://asciinema.org/a/FcBPdpGUPaxo5gLBxSVF3569c.svg)](https://asciinema.org/a/FcBPdpGUPaxo5gLBxSVF3569c)
 
 ### Stability Index
 

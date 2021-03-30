@@ -6,6 +6,13 @@ interface LoadingPinboardViewOpts {
   bookmarkCount: number
 }
 
+/**
+ * Display the number of bookmarks retrieved from Pinboard
+ *
+ * @param opts view data
+ *
+ * @returns
+ */
 export function LoadingPinboardView (opts: LoadingPinboardViewOpts): any {
   return (
     <>

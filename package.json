@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "tsc": "tsc",
-    "start": "tsc && node dist/cli.js --bookmarks /home/rg/.config/google-chrome/Default/Bookmarks"
+    "start": "tsc && node dist/src/cli.js --bookmarks /home/rg/.config/google-chrome/Default/Bookmarks"
   },
   "author": "",
   "license": "ISC",
@@ -20,10 +20,12 @@
     "ink": "^3.0.8",
     "iohook": "^0.7.2",
     "keypress": "^0.2.1",
+    "knex": "^0.95.4",
     "node-fetch": "^2.6.1",
     "pin": "^0.3.0",
     "react": "^17.0.1",
     "signale": "^1.4.0",
+    "sqlite3": "^5.0.2",
     "typescript": "^4.2.3"
   }
 }

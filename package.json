@@ -4,12 +4,15 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "bin": {
+    "pin": "dist/src/cli.js"
+  },
   "scripts": {
     "tsc": "tsc",
-    "start": "tsc && node dist/src/cli.js --bookmarks /home/rg/.config/google-chrome/Default/Bookmarks"
+    "start": "tsc && node dist/src/cli.js edit --bookmarks /home/rg/.config/google-chrome/Default/Bookmarks"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Róisín Grannell",
+  "license": "MIT",
   "dependencies": {
     "@types/dotenv": "^8.2.0",
     "@types/keypress": "^2.0.30",

@@ -1,0 +1,1 @@
+{"version":3,"file":"LoadingPinboardView.js","sourceRoot":"","sources":["../../../src/components/LoadingPinboardView.tsx"],"names":[],"mappings":"AACA,OAAO,KAAK,MAAM,OAAO,CAAA;AACzB,OAAO,EAAE,IAAI,EAAE,MAAM,KAAK,CAAA;AAM1B;;;;;;GAMG;AACH,MAAM,UAAU,mBAAmB,CAAE,IAA6B;IAChE,OAAO,CACL;QACE,oBAAC,IAAI;;YAAY,IAAI,CAAC,aAAa;uDAAsC,CACxE,CACJ,CAAA;AACH,CAAC"}

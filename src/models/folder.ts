@@ -1,4 +1,7 @@
 
+/**
+ * A model containing folder information
+ */
 export class Folder {
   href: string
   folder: string

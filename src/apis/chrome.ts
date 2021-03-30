@@ -35,6 +35,9 @@ interface ChromeBookmarks {
   version: '1'
 }
 
+/**
+ * A class for interacting with Chrome
+ */
 export class Chrome {
   bookmarkPath: string
   bookmarks: ChromeBookmarks

@@ -9,10 +9,10 @@ const docs = `
 Pin - Interact with Pinboard
 
 Usage:
-  pin [--bookmarks <fpath>]
+  pin edit [--bookmarks <fpath>]
 
 Description:
-
+  Sync bookmarks from Pinboard, add them to a folder, and save them to Chrome.
 `
 
 const main = async (): Promise<void> => {

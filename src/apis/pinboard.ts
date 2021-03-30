@@ -4,6 +4,11 @@ import signale from 'signale'
 import { Bookmark } from '../models/bookmark.js'
 import constants from '../constants.js'
 
+/**
+ * Pinboard API
+ *
+ * See https://pinboard.in/api/ for details
+ */
 export class Pinboard {
   key: string
 

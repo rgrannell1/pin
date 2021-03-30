@@ -11,6 +11,9 @@ interface BookmarkOpts {
   tags: string
 }
 
+/**
+ * A model containing Pinboard bookmark information
+ */
 export class Bookmark {
   href: string
   description: string

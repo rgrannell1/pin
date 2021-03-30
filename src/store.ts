@@ -17,6 +17,10 @@ export class Store {
     })
   }
 
+  /**
+   * Perform any database initialisation like table-creation required
+   *
+   */
   async initialise (): Promise<void> {
     if (!await this.client.schema.hasTable('bookmark')) {
       await this.client.schema
@@ -56,6 +60,11 @@ export class Store {
     }
   }
 
+  /**
+   * Save the last time Pinboard reported updating to the Pin DB
+   *
+   * @param time a timestamp string reported by Pinboard
+   */
   async setUpdateTime (time: string): Promise<void> {
     await this.client('lastUpdate')
       .insert({ id: 'lastUpdate', time })
@@ -63,18 +72,35 @@ export class Store {
       .merge()
   }
 
-  async getUpdateTime (): Promise<string> {
+  /**
+   * Get the last time Pinboard reported updating from the Pin DB
+   *
+   * @returns the stored update time
+   */
+  async getUpdateTime (): Promise<string | undefined> {
     const [match] = await this.client('lastUpdate').select('*')
 
-    return match.time as string
+    return match.time
   }
 
+  /**
+   * Fetch a bookmark by row-number in the database
+   *
+   * @param cursor a number
+   *
+   * @returns a bookmark
+   */
   async getBookmark (cursor: number): Promise<Bookmark> {
     const matches = await this.client('bookmark').select('*').limit(1).offset(cursor)
 
     return new Bookmark(matches[0])
   }
 
+  /**
+   * Get the number of bookmarks saved to the Pin database
+   *
+   * @returns a count of bookmarks
+   */
   async getBookmarkCount (): Promise<number> {
     const [result] = await this.client('bookmark').count()
 
@@ -82,6 +108,13 @@ export class Store {
     return value
   }
 
+  /**
+   * Get folder data given a href
+   *
+   * @param href a href to a bookmark
+   *
+   * @returns a folder, if one is present
+   */
   async getFolder (href: string): Promise<Folder | undefined> {
     const [result] = await this.client('folders').select('folder').where('href', href)
 
@@ -90,12 +123,22 @@ export class Store {
     }
   }
 
+  /**
+   * Get a list of folders currently used by bookmarks in Pin's DB
+   *
+   * @returns a list of folder names
+   */
   async getFolders (): Promise<string[]> {
     const matches = await this.client('folders').select('folder')
 
     return matches.map(match => match.folder)
   }
 
+  /**
+   * Add a bookmark to the database
+   *
+   * @param bookmark a bookmark object
+   */
   async addBookmark (bookmark: Bookmark): Promise<void> {
     await this.client('bookmark')
       .insert(bookmark)
@@ -103,6 +146,11 @@ export class Store {
       .merge()
   }
 
+  /**
+   * Add a folder to a particular bookmark.
+   *
+   * @param folder a folder object
+   */
   async addFolder (folder: Folder): Promise<void> {
     await this.client('folders')
       .insert(folder)

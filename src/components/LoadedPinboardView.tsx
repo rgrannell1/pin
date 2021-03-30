@@ -18,7 +18,7 @@ interface LoadedPinboardViewOpts {
 }
 
 /**
- * Render the pinboard
+ * Render bookmark information and the edit pane
  *
  * @param opts view data
  *

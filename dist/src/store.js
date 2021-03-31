@@ -76,7 +76,7 @@ export class Store {
      * @returns a bookmark
      */
     async getBookmark(cursor) {
-        const matches = await this.client('bookmark').select('*').limit(1).offset(cursor);
+        const matches = await this.client('bookmark').select('*').orderBy('time', 'desc').limit(1).offset(cursor);
         return new Bookmark(matches[0]);
     }
     /**

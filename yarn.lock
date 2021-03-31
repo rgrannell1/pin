@@ -205,7 +205,7 @@ asynckit@^0.4.0:
   version "1.0.0"
   resolved "https://codeload.github.com/rgrannell1/atypical/tar.gz/e2629af9c6f0a35d1eae7d20760c3e1230840d57"
   dependencies:
-    "@rgrannell/revexp" "^1.1.0"
+    "@rgrannell/revexp" "^1.0.0"
     c8 "^7.6.0"
     chalk "^4.1.0"
     typescript "^4.2.3"
@@ -536,6 +536,11 @@ diff@4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/diff/-/diff-4.0.2.tgz#60f3aecb89d5fae520c11aa19efc2bb982aade7d"
   integrity sha512-58lmxKSA4BNyLz+HHMUzlOEpg09FV+ev6ZMe3vJihgdxzgcwZ8VoEEPmALCZG9LmqfVoNMMKpttIYTVG6uDY7A==
+
+docopt@^0.6.2:
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/docopt/-/docopt-0.6.2.tgz#b28e9e2220da5ec49f7ea5bb24a47787405eeb11"
+  integrity sha1-so6eIiDaXsSffqW7JKR3h0Be6xE=
 
 dotenv@*, dotenv@^8.2.0:
   version "8.2.0"

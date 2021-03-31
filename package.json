@@ -21,6 +21,7 @@
     "@types/node-fetch": "^2.5.8",
     "@types/react": "^17.0.3",
     "@types/signale": "^1.4.1",
+    "docopt": "^0.6.2",
     "dotenv": "^8.2.0",
     "ink": "^3.0.8",
     "iohook": "^0.7.2",

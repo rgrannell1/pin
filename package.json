@@ -16,6 +16,7 @@
   "license": "MIT",
   "dependencies": {
     "@rgrannell/revexp": "^1.1.0",
+    "@types/docopt": "^0.6.31",
     "@types/dotenv": "^8.2.0",
     "@types/keypress": "^2.0.30",
     "@types/node-fetch": "^2.5.8",

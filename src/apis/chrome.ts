@@ -52,6 +52,7 @@ export class Chrome {
       this.bookmarks = JSON.parse(content.toString())
     } catch (err) {
       signale.error(`${constants.codes.FAILED_BOOKMARK_READ}: failed to read Chrome bookmarks: ${err.message as string}`)
+      process.exit(1)
     }
   }
 

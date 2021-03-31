@@ -8,7 +8,7 @@ const { render } = ink;
  * @param args command-line arguments
  */
 export const pin = async (args) => {
-    const bookmarkPath = args['<fpath>'];
+    const bookmarkPath = args['--bookmarks'];
     render(React.createElement(React.StrictMode, null,
         React.createElement(Pin, { bookmarkPath: bookmarkPath })), {});
 };

@@ -15,6 +15,7 @@ export class Chrome {
         }
         catch (err) {
             signale.error(`${constants.codes.FAILED_BOOKMARK_READ}: failed to read Chrome bookmarks: ${err.message}`);
+            process.exit(1);
         }
     }
     static listFolders(children, path) {

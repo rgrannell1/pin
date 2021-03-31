@@ -11,7 +11,7 @@ const { render } = ink
  * @param args command-line arguments
  */
 export const pin = async (args: Record<string, any>): Promise<void> => {
-  const bookmarkPath = args['<fpath>']
+  const bookmarkPath = args['--bookmarks']
 
   render(<React.StrictMode><Pin bookmarkPath={bookmarkPath} /></React.StrictMode>, { })
 }

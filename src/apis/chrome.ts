@@ -78,4 +78,8 @@ export class Chrome {
   folderNames (): string[] {
     return Chrome.listFolders(this.bookmarks.roots.bookmark_bar.children, '')
   }
+
+  asBookmarkFile (): string {
+    return ''
+  }
 }

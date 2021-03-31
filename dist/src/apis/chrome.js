@@ -37,5 +37,8 @@ export class Chrome {
     folderNames() {
         return Chrome.listFolders(this.bookmarks.roots.bookmark_bar.children, '');
     }
+    asBookmarkFile() {
+        return '';
+    }
 }
 //# sourceMappingURL=chrome.js.map

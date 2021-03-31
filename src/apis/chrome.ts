@@ -101,7 +101,7 @@ export class Chrome {
     let folders = ''
 
     for (const [folder, bookmarks] of Object.entries(byFolder)) {
-      let message = '<DL><p>'
+      let message = `<DT><H3>${folder}</H3>\n<DL><p>`
 
       for (const bookmark of bookmarks) {
         message += `<DT><A HREF="${bookmark.href}">${escapeHtml(bookmark.description)}</A>\n`

@@ -1,5 +1,5 @@
 
-# Pin
+# Pin [![CI](https://github.com/rgrannell1/pin/actions/workflows/ci.yaml/badge.svg)](https://github.com/rgrannell1/pin/actions/workflows/ci.yaml)
 
 Sync bookmarks from Pinboard to Chrome after labelling them interactively.
 

@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import signale from 'signale';
+import escapeHtml from 'escape-html';
 import constants from '../constants.js';
 /**
  * A class for interacting with Chrome
@@ -37,8 +38,34 @@ export class Chrome {
     folderNames() {
         return Chrome.listFolders(this.bookmarks.roots.bookmark_bar.children, '');
     }
-    asBookmarkFile() {
-        return '';
+    async asBookmarkFile(store) {
+        const data = await store.getAllBookmarks();
+        const byFolder = {};
+        for (const { folder, bookmark } of data) {
+            const label = folder?.folder ?? 'unknown';
+            if (!byFolder[label]) {
+                byFolder[label] = [];
+            }
+            byFolder[label].push(bookmark);
+        }
+        let folders = '';
+        for (const [folder, bookmarks] of Object.entries(byFolder)) {
+            let message = '<DL><p>';
+            for (const bookmark of bookmarks) {
+                message += `<DT><A HREF="${bookmark.href}">${escapeHtml(bookmark.description)}</A>\n`;
+            }
+            folders += message + '</DL><p>\n';
+        }
+        return `
+    <!DOCTYPE NETSCAPE-Bookmark-file-1>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+    <TITLE>Bookmarks</TITLE>
+    <H1>Bookmarks</H1>
+    <DL><p>
+      <DT><H3 PERSONAL_TOOLBAR_FOLDER="true">Bookmarks bar</H3>
+      ${folders}
+    </DL><p>
+    `;
     }
 }
 //# sourceMappingURL=chrome.js.map

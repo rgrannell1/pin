@@ -122,6 +122,16 @@ export class Store {
             .onConflict('href')
             .merge();
     }
+    async getAllBookmarks() {
+        const matches = await this.client('bookmark').select('*')
+            .leftJoin('folders', 'bookmark.href', 'folders.href');
+        return matches.map(match => {
+            return {
+                folder: match.folder ? new Folder(match.href, match.folder) : undefined,
+                bookmark: new Bookmark(match)
+            };
+        });
+    }
     /**
      * Add a folder to a particular bookmark.
      *

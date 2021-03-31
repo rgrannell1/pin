@@ -133,5 +133,8 @@ export class Store {
             .onConflict('href')
             .merge();
     }
+    async close() {
+        await this.client.destroy();
+    }
 }
 //# sourceMappingURL=store.js.map

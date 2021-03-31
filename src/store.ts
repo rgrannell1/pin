@@ -157,4 +157,8 @@ export class Store {
       .onConflict('href')
       .merge()
   }
+
+  async close (): Promise<void> {
+    await this.client.destroy()
+  }
 }

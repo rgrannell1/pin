@@ -128,6 +128,10 @@ export class Pin extends React.Component<PinProps, PinState> {
   }
 
   async handleKeyPress (_: any, key: Keypress | undefined): Promise<void> {
+    if (this.state.state === 'LOADED_PINBOARD' && !this.state.active && key?.name === 'q') {
+      process.exit(0)
+    }
+
     if (typeof key !== 'undefined' && key.ctrl && (key.name === 'c' || key.name === 'z')) {
       process.exit(0)
     }

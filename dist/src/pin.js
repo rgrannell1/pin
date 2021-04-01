@@ -4,11 +4,10 @@ import * as fs from 'fs';
 import React from 'react';
 import { Chrome } from './apis/chrome.js';
 import { Pin } from './components/Pin.js';
-const { render } = ink;
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { Store } from './store.js';
-import signale from 'signale';
+const { render } = ink;
 const dir = dirname(fileURLToPath(import.meta.url));
 const fpath = path.join(dir, '../../data/data.db');
 /**
@@ -18,7 +17,7 @@ const fpath = path.join(dir, '../../data/data.db');
  */
 export const pin = async (args) => {
     const bookmarkPath = args['--bookmarks'];
-    if (args.edit) {
+    if (args.edit === true) {
         render(React.createElement(React.StrictMode, null,
             React.createElement(Pin, { bookmarkPath: bookmarkPath })), {});
     }
@@ -28,7 +27,8 @@ export const pin = async (args) => {
         const chromeContent = await chrome.asBookmarkFile(store);
         const bookmarkOutPath = path.join(dir, '../../bookmarks.html');
         await fs.promises.writeFile(bookmarkOutPath, chromeContent);
-        signale.info(`bookmarks created and saved to ${bookmarkOutPath}`);
+        console.log(`bookmarks created and saved to ${bookmarkOutPath}. Open chrome://settings/importData to import it!`);
+        await store.close();
     }
 };
 //# sourceMappingURL=pin.js.map

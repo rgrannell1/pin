@@ -1,7 +1,7 @@
 
 import * as fs from 'fs'
 import signale from 'signale'
-import escapeHtml from 'escape-html'
+import nunjucks from 'nunjucks'
 
 import constants from '../constants.js'
 import { Bookmark } from '../models/bookmark.js'
@@ -50,6 +50,10 @@ export class Chrome {
     this.bookmarkPath = bookmarkPath
   }
 
+  /**
+   * Read existing bookmark information from Chrome.
+   *
+   */
   async initialise (): Promise<void> {
     try {
       const content = await fs.promises.readFile(this.bookmarkPath)
@@ -83,12 +87,18 @@ export class Chrome {
     return Chrome.listFolders(this.bookmarks.roots.bookmark_bar.children, '')
   }
 
+  /**
+   * Generate a bookmark file
+   *
+   * @param store
+   * @returns
+   */
   async asBookmarkFile (store: Store): Promise<string> {
     const data = await store.getAllBookmarks()
 
     const byFolder: Record<string, Bookmark[]> = { }
 
-    for (const {folder, bookmark} of data) {
+    for (const { folder, bookmark } of data) {
       const label = folder?.folder ?? 'unknown'
 
       if (!byFolder[label]) {
@@ -98,27 +108,24 @@ export class Chrome {
       byFolder[label].push(bookmark)
     }
 
-    let folders = ''
-
-    for (const [folder, bookmarks] of Object.entries(byFolder)) {
-      let message = `<DT><H3>${folder}</H3>\n<DL><p>`
-
-      for (const bookmark of bookmarks) {
-        message += `<DT><A HREF="${bookmark.href}">${escapeHtml(bookmark.description)}</A>\n`
-      }
-
-      folders += message + '</DL><p>\n'
-    }
-
-    return `
+    return nunjucks.renderString(`
     <!DOCTYPE NETSCAPE-Bookmark-file-1>
     <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
     <TITLE>Bookmarks</TITLE>
     <H1>Bookmarks</H1>
+
     <DL><p>
-      <DT><H3 PERSONAL_TOOLBAR_FOLDER="true">Bookmarks bar</H3>
-      ${folders}
+      <DL><p>
+      {% for folder, bookmarks in byFolder %}
+        <DT><H3>{{folder}}</H3>
+        <DL><p>
+          {% for bookmark in bookmarks %}
+            <DT><A HREF="{{bookmark.href}}">{{bookmark.description}}</A>
+          {% endfor %}
+        </DL></p>
+        {% endfor %}
+      </DL><p>
     </DL><p>
-    `
+    `, { byFolder })
   }
 }

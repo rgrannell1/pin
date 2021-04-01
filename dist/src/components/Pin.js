@@ -54,6 +54,9 @@ export class Pin extends React.Component {
         await store.addFolder(new Folder(bookmark.href, folder));
     }
     async handleKeyPress(_, key) {
+        if (this.state.state === 'LOADED_PINBOARD' && !this.state.active && key?.name === 'q') {
+            process.exit(0);
+        }
         if (typeof key !== 'undefined' && key.ctrl && (key.name === 'c' || key.name === 'z')) {
             process.exit(0);
         }

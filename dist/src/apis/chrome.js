@@ -2,6 +2,9 @@ import * as fs from 'fs';
 import signale from 'signale';
 import nunjucks from 'nunjucks';
 import constants from '../constants.js';
+const sortFolders = (data0, data1) => {
+    return data0.folder?.folder?.localeCompare(data1.folder?.folder ?? 'zzzzzz') ?? 0;
+};
 /**
  * A class for interacting with Chrome
  */
@@ -51,7 +54,7 @@ export class Chrome {
     async asBookmarkFile(store) {
         const data = await store.getAllBookmarks();
         const byFolder = {};
-        for (const { folder, bookmark } of data) {
+        for (const { folder, bookmark } of data.sort(sortFolders)) {
             const label = folder?.folder ?? 'unknown';
             if (!byFolder[label]) {
                 byFolder[label] = [];

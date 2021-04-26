@@ -6,6 +6,7 @@ import nunjucks from 'nunjucks'
 import constants from '../constants.js'
 import { Bookmark } from '../models/bookmark.js'
 import { Store } from '../store.js'
+import { Folder } from '../models/folder.js'
 
 interface ChromeBookmarkFolder {
   children: ChromeBookmarkUrl[]
@@ -37,6 +38,15 @@ interface ChromeBookmarks {
   }
   sync_metadata: string
   version: '1'
+}
+
+interface Datum {
+  folder: Folder | undefined
+  bookmark: Bookmark
+}
+
+const sortFolders = (data0: Datum, data1: Datum): number => {
+  return data0.folder?.folder?.localeCompare(data1.folder?.folder ?? 'zzzzzz') ?? 0
 }
 
 /**
@@ -98,7 +108,7 @@ export class Chrome {
 
     const byFolder: Record<string, Bookmark[]> = { }
 
-    for (const { folder, bookmark } of data) {
+    for (const { folder, bookmark } of data.sort(sortFolders)) {
       const label = folder?.folder ?? 'unknown'
 
       if (!byFolder[label]) {

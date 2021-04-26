@@ -43,7 +43,7 @@ export function LoadedPinboardView (opts: LoadedPinboardViewOpts): any {
 
   return (
     <>
-      <Text inverse>{(opts.cursor ?? 0) + 1} / {opts.bookmarkCount}{edit}</Text>
+      <Text>📌 </Text><Text inverse>{(opts.cursor ?? 0) + 1} / {opts.bookmarkCount}{edit}</Text>
       <Text> </Text>
       <Text bold>folder:</Text>
       {textData}

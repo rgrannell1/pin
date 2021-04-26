@@ -24,6 +24,7 @@ export function LoadedPinboardView(opts) {
             folder),
         React.createElement(Text, { color: '#005cc5', inverse: true }, predictedFolder));
     return (React.createElement(React.Fragment, null,
+        React.createElement(Text, null, "\uD83D\uDCCC "),
         React.createElement(Text, { inverse: true },
             (opts.cursor ?? 0) + 1,
             " / ",

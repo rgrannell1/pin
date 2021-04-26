@@ -7,7 +7,7 @@ Sync bookmarks from Pinboard to Chrome after labelling them interactively.
 
 ### Stability Index
 
-1, Experimental - This project might die, it's undertested and underdocumented, and redesigns and breaking changes are likely
+2, Evolving - This project is healthy, but might lack testing or documentation or it is prone to breaking changes
 
 ### Usage
 
@@ -16,7 +16,7 @@ Set PINBOARD_API_KEY in your environment and run
 ```bash
 pin edit --bookmarks <path-to-your-bookmarks>
 ```
-to generate an SQL database of bookmarks and edit the folder they are assigned to, and
+to generate an SQL database of bookmarks in `$HOME./pin` and edit the folder they are assigned to, and
 
 ```bash
 pin merge --bookmarks <path-to-your-bookmarks>

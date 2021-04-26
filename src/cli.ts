@@ -11,14 +11,13 @@ Pin - Interact with Pinboard
 
 Usage:
   pin edit [--bookmarks <fpath>]
-  pin merge [--bookmarks <fpath>] [--not-dry-run]
+  pin merge [--bookmarks <fpath>]
 
 Description:
-  Sync bookmarks from Pinboard, add them to a folder, and save them to Chrome.
+  Pin syncs bookmarks from Pinboard to a local Sqlite database ($home/.pin/data.db), and allows you to quickly add each bookmark to a folder. You can then import the labelled bookmarks to Chrome using 'pin merge'.
 
 Options:
   --bookmarks <fpath>   the file-path of the bookmarks
-  --not-dry-run         actually perform the merge, as opposed to showing the results safely.
 
 License:
   The MIT License

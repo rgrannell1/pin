@@ -10,12 +10,35 @@ import { Pin } from './components/Pin/Pin.js'
 import { dirname } from 'path'
 import { fileURLToPath } from 'url'
 import { Store } from './store.js'
-import signale from 'signale'
+import * as os from 'os'
 
 const { render } = ink
 
 const dir = dirname(fileURLToPath(import.meta.url))
 const fpath = path.join(dir, '../../data/data.db')
+
+/**
+ * Create a database folder
+ *
+ * @returns the database path
+ */
+const createDatabase = async () => {
+  const homedir = os.homedir()
+
+  const dir = path.join(homedir, '.pin')
+
+  try {
+    await fs.promises.access(dir, fs.constants.F_OK)
+  } catch (error) {
+    await fs.mkdir(dir, { recursive: true }, function (err) {
+      if (err) {
+        console.log(err)
+      }
+    })
+  }
+
+  return path.join(dir, 'data.db')
+}
 
 /**
  * The core application
@@ -25,8 +48,10 @@ const fpath = path.join(dir, '../../data/data.db')
 export const pin = async (args: Record<string, any>): Promise<void> => {
   const bookmarkPath = args['--bookmarks']
 
+  const dbPath = await createDatabase()
+
   if (args.edit === true) {
-    render(<React.StrictMode><Pin bookmarkPath={bookmarkPath} /></React.StrictMode>, {})
+    render(<React.StrictMode><Pin dbPath={dbPath} bookmarkPath={bookmarkPath} /></React.StrictMode>, {})
   } else {
     const chrome = new Chrome(bookmarkPath)
     const store = new Store(fpath)

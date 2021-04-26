@@ -1,5 +1,4 @@
 
-import * as path from 'path'
 import React from 'react'
 
 import keypress from 'keypress'
@@ -11,8 +10,6 @@ import { Pinboard } from '../../apis/pinboard.js'
 import constants from '../../constants.js'
 import { Store } from '../../store.js'
 
-import { dirname } from 'path'
-import { fileURLToPath } from 'url'
 import { ErrorView } from '../ErrorView.js'
 import { LoadingPinboardView } from '../LoadingPinboardView.js'
 import { LoadedPinboardView } from '../LoadedPinboardView.js'
@@ -20,10 +17,9 @@ import { Folder } from '../../models/folder.js'
 import { Bookmark } from '../../models/bookmark.js'
 import handleKeyPress from './handle-keypress.js'
 
-const dir = dirname(fileURLToPath(import.meta.url))
-
 interface PinProps {
   bookmarkPath: string
+  dbPath: string
 }
 
 export interface Key {
@@ -69,8 +65,6 @@ interface Common {
 
 type PinState = PinStateLoading & Common | PinStateLoaded & Common | PinErrorState & Common
 
-const fpath = path.join(dir, '../../../../data/data.db')
-
 interface Keypress {
   ctrl: boolean
   name?: string
@@ -102,7 +96,7 @@ export class Pin extends React.Component<PinProps, PinState> {
 
     this.state = {
       pin: new Pinboard(key),
-      store: new Store(fpath),
+      store: new Store(props.dbPath),
       browser: new Chrome(props.bookmarkPath),
 
       state: 'LOADING_PINBOARD',

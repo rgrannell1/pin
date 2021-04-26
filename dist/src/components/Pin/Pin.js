@@ -1,4 +1,3 @@
-import * as path from 'path';
 import React from 'react';
 import keypress from 'keypress';
 import config from '../../config/default.js';
@@ -6,16 +5,12 @@ import { Chrome } from '../../apis/chrome.js';
 import { Pinboard } from '../../apis/pinboard.js';
 import constants from '../../constants.js';
 import { Store } from '../../store.js';
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
 import { ErrorView } from '../ErrorView.js';
 import { LoadingPinboardView } from '../LoadingPinboardView.js';
 import { LoadedPinboardView } from '../LoadedPinboardView.js';
 import { Folder } from '../../models/folder.js';
 import { Bookmark } from '../../models/bookmark.js';
 import handleKeyPress from './handle-keypress.js';
-const dir = dirname(fileURLToPath(import.meta.url));
-const fpath = path.join(dir, '../../../../data/data.db');
 export class Pin extends React.Component {
     constructor(props) {
         super(props);
@@ -35,7 +30,7 @@ export class Pin extends React.Component {
         }
         this.state = {
             pin: new Pinboard(key),
-            store: new Store(fpath),
+            store: new Store(props.dbPath),
             browser: new Chrome(props.bookmarkPath),
             state: 'LOADING_PINBOARD',
             bookmarkCount: 0,

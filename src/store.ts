@@ -80,7 +80,9 @@ export class Store {
   async getUpdateTime (): Promise<string | undefined> {
     const [match] = await this.client('lastUpdate').select('*')
 
-    return match.time
+    return match
+      ? match.time
+      : 0
   }
 
   /**

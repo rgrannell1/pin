@@ -66,7 +66,9 @@ export class Store {
      */
     async getUpdateTime() {
         const [match] = await this.client('lastUpdate').select('*');
-        return match.time;
+        return match
+            ? match.time
+            : 0;
     }
     /**
      * Fetch a bookmark by row-number in the database

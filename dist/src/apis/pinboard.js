@@ -10,6 +10,11 @@ export class Pinboard {
     constructor(key) {
         this.key = key;
     }
+    /**
+     * Get the last update time for a pinboard account
+     *
+     * @returns the API's JSON-response
+     */
     async lastUpdate() {
         const response = await fetch(`https://api.pinboard.in/v1/posts/update?format=json&auth_token=${this.key}`);
         if (response.status === 401) {
@@ -23,6 +28,11 @@ export class Pinboard {
         }
         return await response.json();
     }
+    /**
+     * Enumerate all pinboard bookmarks
+     *
+     * @returns a generator of bookmarks
+     */
     async *all() {
         let start = 0;
         const offset = 50;

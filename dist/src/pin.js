@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import React from 'react';
 import { Chrome } from './apis/chrome.js';
-import { Pin } from './components/Pin.js';
+import { Pin } from './components/Pin/Pin.js';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { Store } from './store.js';

@@ -45,6 +45,14 @@ interface Datum {
   bookmark: Bookmark
 }
 
+/**
+ * Sort folders by name
+ *
+ * @param data0
+ * @param data1
+ *
+ * @returns
+ */
 const sortFolders = (data0: Datum, data1: Datum): number => {
   return data0.folder?.folder?.localeCompare(data1.folder?.folder ?? 'zzzzzz') ?? 0
 }
@@ -74,6 +82,14 @@ export class Chrome {
     }
   }
 
+  /**
+   * List folders in Chrome's bookmarks
+   *
+   * @param children Chrome bookmark children
+   * @param path the property path currently being examined
+   *
+   * @returns an array of unique folder-names
+   */
   static listFolders (children: Array<ChromeBookmarkUrl | ChromeBookmarkFolder>, path: string): string[] {
     let members: string[] = []
 
@@ -98,7 +114,7 @@ export class Chrome {
   }
 
   /**
-   * Generate a bookmark file
+   * Generate a bookmark file from all stored bookmarks.
    *
    * @param store
    * @returns

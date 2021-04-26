@@ -2,6 +2,14 @@ import * as fs from 'fs';
 import signale from 'signale';
 import nunjucks from 'nunjucks';
 import constants from '../constants.js';
+/**
+ * Sort folders by name
+ *
+ * @param data0
+ * @param data1
+ *
+ * @returns
+ */
 const sortFolders = (data0, data1) => {
     return data0.folder?.folder?.localeCompare(data1.folder?.folder ?? 'zzzzzz') ?? 0;
 };
@@ -26,6 +34,14 @@ export class Chrome {
             process.exit(1);
         }
     }
+    /**
+     * List folders in Chrome's bookmarks
+     *
+     * @param children Chrome bookmark children
+     * @param path the property path currently being examined
+     *
+     * @returns an array of unique folder-names
+     */
     static listFolders(children, path) {
         let members = [];
         for (const child of children) {
@@ -46,7 +62,7 @@ export class Chrome {
         return Chrome.listFolders(this.bookmarks.roots.bookmark_bar.children, '');
     }
     /**
-     * Generate a bookmark file
+     * Generate a bookmark file from all stored bookmarks.
      *
      * @param store
      * @returns

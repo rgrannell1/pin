@@ -4,20 +4,21 @@ import React from 'react'
 
 import keypress from 'keypress'
 
-import config from '../config/default.js'
-import { Chrome } from '../apis/chrome.js'
+import config from '../../config/default.js'
+import { Chrome } from '../../apis/chrome.js'
 
-import { Pinboard } from '../apis/pinboard.js'
-import constants from '../constants.js'
-import { Store } from '../store.js'
+import { Pinboard } from '../../apis/pinboard.js'
+import constants from '../../constants.js'
+import { Store } from '../../store.js'
 
 import { dirname } from 'path'
 import { fileURLToPath } from 'url'
-import { ErrorView } from './ErrorView.js'
-import { LoadingPinboardView } from './LoadingPinboardView.js'
-import { LoadedPinboardView } from './LoadedPinboardView.js'
-import { Folder } from '../models/folder.js'
-import { Bookmark } from '../models/bookmark.js'
+import { ErrorView } from '../ErrorView.js'
+import { LoadingPinboardView } from '../LoadingPinboardView.js'
+import { LoadedPinboardView } from '../LoadedPinboardView.js'
+import { Folder } from '../../models/folder.js'
+import { Bookmark } from '../../models/bookmark.js'
+import handleKeyPress from './handle-keypress.js'
 
 const dir = dirname(fileURLToPath(import.meta.url))
 
@@ -68,7 +69,7 @@ interface Common {
 
 type PinState = PinStateLoading & Common | PinStateLoaded & Common | PinErrorState & Common
 
-const fpath = path.join(dir, '../../../data/data.db')
+const fpath = path.join(dir, '../../../../data/data.db')
 
 interface Keypress {
   ctrl: boolean
@@ -77,7 +78,7 @@ interface Keypress {
 }
 
 export class Pin extends React.Component<PinProps, PinState> {
-  constructor (props: PinProps) {
+  constructor(props: PinProps) {
     super(props)
 
     keypress(process.stdin)
@@ -110,7 +111,12 @@ export class Pin extends React.Component<PinProps, PinState> {
     }
   }
 
-  async saveFolder (): Promise<void> {
+  /**
+   * Save a folder-name after editing it
+   *
+   * @returns undefined
+   */
+  async saveFolder(): Promise<void> {
     if (this.state.state !== 'LOADED_PINBOARD') {
       return
     }
@@ -127,162 +133,16 @@ export class Pin extends React.Component<PinProps, PinState> {
     await store.addFolder(new Folder(bookmark.href, folder))
   }
 
-  async handleKeyPress (_: any, key: Keypress | undefined): Promise<void> {
-    if (this.state.state === 'LOADED_PINBOARD' && !this.state.active && key?.name === 'q') {
-      process.exit(0)
-    }
-
-    if (typeof key !== 'undefined' && key.ctrl && (key.name === 'c' || key.name === 'z')) {
-      process.exit(0)
-    }
-
-    if (this.state.state !== 'LOADED_PINBOARD' || typeof key === 'undefined') {
-      return
-    }
-
-    const cursor = this.state.cursor
-
-    if (cursor) {
-      const bookmark = await this.state.store.getBookmark(cursor)
-      const folder = await this.state.store.getFolder(bookmark.href)
-
-      this.setState({
-        ...this.state,
-        cursor,
-        bookmark,
-        folder
-      })
-    }
-
-    if (typeof key.name === 'undefined') {
-      return
-    }
-
-    if (key.name === 'backspace' && this.state.active) {
-      if (typeof this.state.folderBuffer === 'undefined') {
-        return
-      }
-      this.setState({
-        ...this.state,
-        folderBuffer: this.state.folderBuffer.slice(0, -1)
-      })
-    }
-
-    if (key.name === 'escape') {
-      this.setState({
-        ...this.state,
-        active: false
-      })
-
-      return
-    }
-
-    if (key.name === 'return' && !this.state.active) {
-      this.setState({
-        ...this.state,
-        active: true
-      })
-
-      return
-    }
-    if (key.name === 'return' && typeof this.state.folderBuffer !== 'undefined' && this.state.folderBuffer.length > 0) {
-      // -- time to save!
-
-      await this.saveFolder()
-
-      const cursor = Math.min((this.state.cursor ?? 0) + 1, this.state.bookmarkCount - 1)
-      const bookmark = await this.state.store.getBookmark(cursor)
-      const folder = await this.state.store.getFolder(bookmark.href)
-
-      this.setState({
-        ...this.state,
-        active: false,
-        folderBuffer: [],
-        predictedFolder: '',
-        cursor,
-        bookmark,
-        folder
-      })
-      return
-    }
-
-    if (key.name === 'escape' && this.state.active) {
-      this.setState({
-        ...this.state,
-        active: false
-      })
-
-      return
-    }
-
-    const { store } = this.state
-
-    if (key.name === 'down' && !this.state.active) {
-      const cursor = Math.min((this.state.cursor ?? 0) + 1, this.state.bookmarkCount - 1)
-      const bookmark = await store.getBookmark(cursor)
-      const folder = await store.getFolder(bookmark.href)
-
-      this.setState({
-        ...this.state,
-        cursor,
-        bookmark,
-        folder
-      })
-
-      return
-    }
-
-    if (key.name === 'up' && !this.state.active) {
-      const cursor = Math.max((this.state.cursor ?? 0) - 1, 0)
-
-      const bookmark = await store.getBookmark(cursor)
-      const folder = await store.getFolder(bookmark.href)
-
-      this.setState({
-        ...this.state,
-        cursor,
-        bookmark,
-        folder
-      })
-
-      return
-    }
-
-    if (this.state.active) {
-      // -- this is tricky, we need to exclude specials
-      if (key.ctrl) {
-        return
-      }
-      if (key.name.length > 1) {
-        return
-      }
-
-      let name = key.name
-      if (key.shift === true) {
-        name = name.toUpperCase()
-      }
-
-      const folderBuffer = [...this.state.folderBuffer ?? [], name]
-      const folderPrefix = folderBuffer.join('').trim()
-
-      const extras = await this.state.store.getFolders()
-      const folders = [...this.state.browser.folderNames(), ...extras]
-        .map(folder => {
-          return folder.trim().replace('/', '').toLowerCase()
-        })
-      const predictedFolder = folders.find(folder => {
-        return folder.startsWith(folderPrefix.trim().toLowerCase())
-      })
-
-      this.setState({
-        ...this.state,
-        folderBuffer,
-        predictedFolder: predictedFolder?.slice(folderPrefix.length)
-      })
-    }
+  async handleKeyPress (_: any, key: Keypress | undefined) {
+    return handleKeyPress(this, _, key)
   }
 
-  async loadBookmarks (): Promise<void> {
+  /**
+   * Load bookmarks
+   *
+   * @returns
+   */
+  async loadBookmarks(): Promise<void> {
     if (this.state.state === 'ERROR') {
       return
     }
@@ -351,7 +211,12 @@ export class Pin extends React.Component<PinProps, PinState> {
     })
   }
 
-  async componentDidMount (): Promise<void> {
+  /**
+   * Initial setup for the Pin component. Load databases & bookmarks
+   *
+   * @returns
+   */
+  async componentDidMount(): Promise<void> {
     if (this.state.state === 'ERROR') {
       return
     }
@@ -361,7 +226,12 @@ export class Pin extends React.Component<PinProps, PinState> {
     await this.loadBookmarks()
   }
 
-  render (): any {
+  /**
+   * Render the CLI UI
+   *
+   * @returns a react-component
+   */
+  render(): any {
     if (this.state.state === 'ERROR') {
       return ErrorView({
         message: this.state.message

@@ -16,6 +16,11 @@ export class Pinboard {
     this.key = key
   }
 
+  /**
+   * Get the last update time for a pinboard account
+   *
+   * @returns the API's JSON-response
+   */
   async lastUpdate (): Promise<{ update_time: string}> {
     const response = await fetch(`https://api.pinboard.in/v1/posts/update?format=json&auth_token=${this.key}`)
 
@@ -30,6 +35,11 @@ export class Pinboard {
     return await response.json()
   }
 
+  /**
+   * Enumerate all pinboard bookmarks
+   *
+   * @returns a generator of bookmarks
+   */
   async * all (): AsyncGenerator<Bookmark> {
     let start = 0
     const offset = 50
